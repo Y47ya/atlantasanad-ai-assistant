@@ -28,3 +28,24 @@ Example:
   ]
 }}
 """
+
+EMBEDDING_TEMPLATE = """
+Document : {document}
+
+Section : {section}
+
+Résumé de la section :
+{section_summary}
+
+Mots-clés de la section :
+{section_keywords}
+
+Résumé du chunk :
+{chunk_summary}
+
+Mots-clés du chunk :
+{chunk_keywords}
+
+Contenu :
+{chunk}
+""".strip()

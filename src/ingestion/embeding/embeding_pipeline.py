@@ -1,16 +1,11 @@
-from datetime import datetime, UTC
-from pathlib import Path
+from datetime import UTC, datetime
 
-from src.config.settings import PROJECT_ROOT
-from src.ingestion.cleaner.document_cleaner import DocumentCleaner
-from src.ingestion.embeding.base_embeding import BaseEmbedding
-from src.ingestion.metadata.section_metadata_pipeline import SectionMetadataPipeline
-from src.ingestion.metadata.semantic_metadata_generator import SemanticMetadataGenerator
+from src.embedding.base_embedding import BaseEmbedding
+from src.embedding.prompts import EMBEDDING_TEMPLATE
+from src.ingestion.models.chunk import Chunk
 from src.ingestion.models.document import Document
 from src.ingestion.models.indexing_metadata import IndexingMetadata
-from src.ingestion.parser.docling_converter import DoclingAdapter
 from src.ingestion.tools import generate_text_hash
-from src.llm.ollama import OllamaLLM
 
 
 class EmbeddingPipeline:
@@ -23,6 +18,25 @@ class EmbeddingPipeline:
         self.embedding_model = embedding_model
         self.chunking_strategy = chunking_strategy
 
+    def _build_embedding_text(
+        self,
+        chunk: Chunk,
+    ) -> str:
+
+        return EMBEDDING_TEMPLATE.format(
+            document=chunk.metadata.file_name,
+            section=chunk.section.title,
+            section_summary=chunk.section.metadata.semantic.summary,
+            section_keywords=", ".join(
+                chunk.section.metadata.semantic.keywords
+            ),
+            chunk_summary=chunk.metadata.semantic.summary,
+            chunk_keywords=", ".join(
+                chunk.metadata.semantic.keywords
+            ),
+            chunk=chunk.text,
+        )
+
     def process(
         self,
         document: Document,
@@ -30,8 +44,12 @@ class EmbeddingPipeline:
 
         for chunk in document.chunks:
 
+            embedding_text = self._build_embedding_text(
+                chunk
+            )
+
             chunk.embedding = self.embedding_model.embed(
-                chunk.text
+                embedding_text
             )
 
             chunk.metadata.indexing = IndexingMetadata(
@@ -43,5 +61,3 @@ class EmbeddingPipeline:
             )
 
         return document
-
-

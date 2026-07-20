@@ -1,8 +1,11 @@
-# Metada layer
+# Metadata Layer
 
 ## Context
 
-Metadata is used to improve retrieval quality, provide traceability, and simplify index maintenance.
+Metadata is used to improve retrieval quality, enrich embeddings, provide traceability, and simplify index maintenance.
+
+---
+
 ## Candidate Approaches
 
 ### Option 1 — Chunk-level Metadata
@@ -10,32 +13,58 @@ Metadata is used to improve retrieval quality, provide traceability, and simplif
 Generate metadata independently for every chunk.
 
 **Pros**
-- Very specific metadata per chunk
+- Highly specific metadata.
+- Better representation of each chunk.
 
 **Cons**
-- Expensive (LLM per chunk)
-- Inconsistent metadata between chunks of the same section
-- Higher indexing time
+- Expensive (LLM call for every chunk).
+- Chunks lose the broader section context.
+- Metadata may become inconsistent across chunks from the same section.
 
+---
 
-### Option 2 — Section-level Metadata (Selected)
+### Option 2 — Section-level Metadata
 
-Generate metadata once for each document section, then inherit it to all chunks created from that section.
+Generate metadata once for each document section.
 
 **Pros**
-- Lower indexing cost
-- Consistent metadata across related chunks
-- Better semantic representation
-- Simple and scalable
+- Low indexing cost.
+- Consistent metadata for related chunks.
+- Captures the overall topic of the section.
 
 **Cons**
-- Chunks from the same section share identical metadata
+- Too coarse for small chunks.
+- Different chunks within the same section share identical metadata.
 
+---
 
+### Option 3 — Hybrid Metadata Generation (Selected)
+
+Generate metadata at both the section and chunk levels.
+
+**Section Metadata**
+- Section summary
+- Section keywords
+
+**Chunk Metadata**
+- Chunk summary
+- Chunk keywords
+
+---
+
+## Why?
+
+Section metadata provides the high-level semantic context, while chunk metadata captures the precise meaning of each chunk.
+
+During embedding, both metadata levels are combined with the original chunk text to generate richer contextual embeddings.
+
+This provides more informative vectors without sacrificing chunk specificity.
+
+---
 
 ## Decision
 
-Use **section-level metadata generation**.
+Use **hybrid metadata generation**.
 
 Pipeline:
 
@@ -45,53 +74,100 @@ Parser
 Extract document hierarchy
     ↓
 For each section
-    ├─ Extract section title
     ├─ Generate section summary
-    └─ Generate keywords
+    └─ Generate section keywords
     ↓
-Chunk inside the section
+Recursive Chunking
     ↓
-Each chunk inherits the section metadata
+For each chunk
+    ├─ Generate chunk summary
+    └─ Generate chunk keywords
     ↓
-Embedding
+Build contextual embedding text
+    ↓
+Generate embeddings
     ↓
 Qdrant
 ```
 
+---
 
 ## Metadata Schema
+
+### Section Metadata
+
+```json
+{
+  "summary": "...",
+  "keywords": ["...", "..."],
+  "generation": {
+    "provider": "...",
+    "model": "...",
+    "prompt_version": "...",
+    "generated_at": "..."
+  }
+}
+```
+
+### Chunk Metadata
 
 ```json
 {
   "document_id": "...",
   "file_name": "...",
 
-  "section": "...",
-  "subsection": "...",
-  "page": 12,
+  "chunk_id": "...",
+  "chunk_index": 3,
 
-  "section_summary": "...",
-  "keywords": ["...", "..."],
+  "semantic": {
+    "summary": "...",
+    "keywords": ["...", "..."],
+    "generation": {
+      "provider": "...",
+      "model": "...",
+      "prompt_version": "...",
+      "generated_at": "..."
+    }
+  },
 
-  "hash": "...",
-  "indexed_at": "...",
-
-  "embedding_model": "bge-m3",
-  "chunking_strategy": "section_fixed_context"
+  "indexing": {
+    "embedding_provider": "...",
+    "embedding_model": "...",
+    "chunking_strategy": "...",
+    "hash": "...",
+    "indexed_at": "..."
+  }
 }
 ```
 
+---
 
 ## Why This Fits Our Use Case
 
-Insurance documents are highly structured (sections, subsections, policies, procedures).
+Insurance documents are naturally organized into sections containing multiple related topics.
 
-Generating metadata at the **section level** preserves this structure while avoiding unnecessary LLM calls for every chunk.
+Using metadata at both levels allows the system to:
 
-This approach provides:
+- Preserve the semantic context of each section.
+- Capture the specific meaning of every chunk.
+- Produce richer contextual embeddings by combining:
+  - document information,
+  - section information,
+  - section summary,
+  - section keywords,
+  - chunk summary,
+  - chunk keywords,
+  - original chunk text.
+- Improve retrieval quality for semantically similar insurance documents.
+- Maintain full traceability of LLM-generated metadata.
+- Simplify future re-indexing and embedding regeneration.
 
-- Better retrieval through section summaries and keywords.
-- Consistent semantic context for all chunks within the same section.
-- Lower indexing cost and faster processing.
-- Easier document updates using document hash.
-- A simple, production-ready pipeline suitable for large insurance knowledge bases.
+---
+
+## Decision Summary
+
+- **Section Metadata:** Summary + Keywords
+- **Chunk Metadata:** Summary + Keywords
+- **Embedding:** Contextual embedding using both metadata levels
+- **LLM Provenance:** Stored for every generated semantic metadata
+- **Goal:** Maximize retrieval quality while maintaining a production-ready and traceable ingestion pipeline.

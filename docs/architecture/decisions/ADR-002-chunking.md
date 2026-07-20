@@ -4,7 +4,7 @@
 
 #### Selected Approach
 
-*Section-based Chunking + Fixed-size Chunking*
+**Section-based Chunking + Recursive Chunking**
 
 #### Why?
 
@@ -17,16 +17,18 @@ Insurance documents are naturally divided into logical sections.
 - Prevents chunks from crossing different document sections
 - Better retrieval precision
 
-##### 2. Fixed-size Chunking (inside each section)
+##### 2. Recursive Chunking (inside each section)
 
-After extracting a section, split it into fixed-size chunks (with overlap if needed).
+After extracting each section, its content is split using LangChain's `RecursiveCharacterTextSplitter`.
 
 **Why?**
-- Fast indexing
-- Predictable chunk sizes
-- Good scalability for large document collections
-- Compatible with all embedding models and vector databases
+- Preserves complete sentences and paragraphs whenever possible.
+- Falls back to smaller separators only when necessary.
+- Produces chunks with consistent maximum size while minimizing semantic fragmentation.
+- Supports configurable overlap to preserve context across chunk boundaries.
+- More robust than fixed-size chunking for heterogeneous insurance documents containing lists, paragraphs, and tables.
 
+---
 
 ## Embedding Strategy
 
@@ -36,13 +38,30 @@ After extracting a section, split it into fixed-size chunks (with overlap if nee
 
 Instead of embedding only the chunk, prepend contextual information before generating the embedding.
 
+### Context Added
+
+Each chunk is embedded together with its document and section context.
+
+Example:
+
+```text
+Document: Assurance Automobile
+Section: GARANTIES INNOVANTES
+
+<chunk text>
+```
+
 #### Why?
 
 Many chunks begin with generic sentences such as:
 
 > "The insured..."
 
-Without context, these chunks may produce very similar embeddings.
+Without contextual information, these chunks may produce very similar embeddings despite belonging to different topics.
+
+Adding the document and section context improves the semantic representation while keeping the original chunk text unchanged for retrieval.
+
+---
 
 ## Proposed Pipeline
 
@@ -53,7 +72,7 @@ Document Parsing
       ↓
 Extract Sections
       ↓
-Fixed-size Chunking
+Recursive Chunking
       ↓
 Add Document + Section Context
       ↓
@@ -62,20 +81,23 @@ Generate Embeddings
 Qdrant
 ```
 
+---
 
 ## Why This Fits Our Use Case
 
 | Requirement | Proposed Solution |
 |-------------|-------------------|
 | Preserve document meaning | Section-based chunking |
-| Fast indexing | Fixed-size chunking |
+| Preserve sentence structure | Recursive chunking |
 | Improve embedding quality | Contextual embedding |
 | Production-ready | Simple, scalable pipeline |
 | Insurance documentation | Uses existing document hierarchy |
 
+---
 
 ## Decision Summary
 
-- **Boundary Strategy:** Section-based + Fixed-size Chunking
+- **Boundary Strategy:** Section-based + Recursive Chunking
+- **Chunking Algorithm:** LangChain `RecursiveCharacterTextSplitter`
 - **Embedding Strategy:** Contextual Embedding
-- **Goal:** Combine semantic preservation, indexing performance, and high retrieval quality for structured insurance documentation.
+- **Goal:** Combine semantic preservation, adaptive chunk splitting, and high retrieval quality for structured insurance documentation.
