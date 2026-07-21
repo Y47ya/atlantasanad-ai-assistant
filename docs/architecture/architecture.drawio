@@ -1,0 +1,55 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Page-1" id="e7fnYCDf34JTafT7gZxL">
+    <mxGraphModel dx="2175" dy="1277" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="8vuH8tzdfxyfJ3b4gvlp-3" edge="1" parent="1" source="8vuH8tzdfxyfJ3b4gvlp-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=none;strokeColor=#0B4D6A;fontColor=default;" target="8vuH8tzdfxyfJ3b4gvlp-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8vuH8tzdfxyfJ3b4gvlp-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;labelBackgroundColor=none;fillColor=#09555B;strokeColor=#BAC8D3;fontColor=#EEEEEE;" value="PDF" vertex="1">
+          <mxGeometry height="80" width="160" x="80" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="8vuH8tzdfxyfJ3b4gvlp-13" edge="1" parent="1" source="8vuH8tzdfxyfJ3b4gvlp-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=none;strokeColor=#0B4D6A;fontColor=default;" target="8vuH8tzdfxyfJ3b4gvlp-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8vuH8tzdfxyfJ3b4gvlp-2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;labelBackgroundColor=none;fillColor=#09555B;strokeColor=#BAC8D3;fontColor=#EEEEEE;" value="&lt;div&gt;Docling Parser&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="160" x="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="8vuH8tzdfxyfJ3b4gvlp-14" edge="1" parent="1" source="8vuH8tzdfxyfJ3b4gvlp-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=none;strokeColor=#0B4D6A;fontColor=default;" target="8vuH8tzdfxyfJ3b4gvlp-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8vuH8tzdfxyfJ3b4gvlp-4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;labelBackgroundColor=none;fillColor=#09555B;strokeColor=#BAC8D3;fontColor=#EEEEEE;" value="&lt;div&gt;Document Cleaner&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="160" x="480" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="8vuH8tzdfxyfJ3b4gvlp-15" edge="1" parent="1" source="8vuH8tzdfxyfJ3b4gvlp-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=none;strokeColor=#0B4D6A;fontColor=default;" target="8vuH8tzdfxyfJ3b4gvlp-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8vuH8tzdfxyfJ3b4gvlp-5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;labelBackgroundColor=none;fillColor=#09555B;strokeColor=#BAC8D3;fontColor=#EEEEEE;" value="&lt;div align=&quot;left&quot;&gt;Section Metadata Pipeline&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;- Summary&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;- Keywords&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="160" x="680" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="8vuH8tzdfxyfJ3b4gvlp-16" edge="1" parent="1" source="8vuH8tzdfxyfJ3b4gvlp-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=none;strokeColor=#0B4D6A;fontColor=default;" target="8vuH8tzdfxyfJ3b4gvlp-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8vuH8tzdfxyfJ3b4gvlp-7" parent="1" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;fillColor=#09555B;strokeColor=#BAC8D3;fontColor=#EEEEEE;" value="&lt;div&gt;Recursive Chunkere&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="160" x="680" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="8vuH8tzdfxyfJ3b4gvlp-17" edge="1" parent="1" source="8vuH8tzdfxyfJ3b4gvlp-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=none;strokeColor=#0B4D6A;fontColor=default;" target="8vuH8tzdfxyfJ3b4gvlp-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8vuH8tzdfxyfJ3b4gvlp-8" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;labelBackgroundColor=none;fillColor=#09555B;strokeColor=#BAC8D3;fontColor=#EEEEEE;" value="&lt;div align=&quot;left&quot;&gt;Chunk Metadata Pipeline&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;- Summary&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;- Keywords&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="160" x="480" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="8vuH8tzdfxyfJ3b4gvlp-18" edge="1" parent="1" source="8vuH8tzdfxyfJ3b4gvlp-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=none;strokeColor=#0B4D6A;fontColor=default;" target="8vuH8tzdfxyfJ3b4gvlp-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8vuH8tzdfxyfJ3b4gvlp-10" parent="1" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;fillColor=#09555B;strokeColor=#BAC8D3;fontColor=#EEEEEE;" value="&lt;div&gt;Embedding Pipeline&lt;/div&gt;&lt;div&gt;BAAI/bge-m3&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="160" x="280" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="8vuH8tzdfxyfJ3b4gvlp-11" parent="1" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;fillColor=#09555B;strokeColor=#BAC8D3;fontColor=#EEEEEE;" value="Qdrant Storage" vertex="1">
+          <mxGeometry height="80" width="160" x="80" y="240" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
