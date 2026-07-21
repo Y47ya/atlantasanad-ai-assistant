@@ -8,11 +8,6 @@ Production-ready Retrieval-Augmented Generation (RAG) system for ATLANTASANAD As
 
 This project aims to build an enterprise AI assistant capable of answering questions from internal company documentation while ensuring:
 
-- 100% local execution (no cloud services)
-- Protection of sensitive company data
-- Production-ready architecture
-- Modular and extensible pipeline
-
 The ingestion pipeline transforms raw PDF documents into searchable vectors stored inside Qdrant.
 
 ---
@@ -224,7 +219,6 @@ src/
 
     config/
 
-    models/
 ```
 
 ---
@@ -258,32 +252,6 @@ Completed
 - API integration
 - Agent orchestration
 - Evaluation framework
-
----
-
-# Design Principles
-
-- Modular architecture
-- SOLID principles
-- Local-first execution
-- Enterprise-ready
-- Extensible pipelines
-- Strong typing
-- Reusable components
-- Configuration-driven design
-
----
-
-# Technologies
-
-| Component | Technology |
-|------------|------------|
-| Parsing | Docling |
-| LLM | Ollama |
-| Model | Qwen2.5 |
-| Embedding | BAAI/bge-m3 |
-| Vector Database | Qdrant |
-| Language | Python 3.11 |
 
 ---
 
