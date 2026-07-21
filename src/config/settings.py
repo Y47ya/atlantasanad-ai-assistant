@@ -27,3 +27,10 @@ CHUNK_SEPARATORS = separators_raw.split("|||")
 
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "BAAI/bge-m3")
 CHUNKING_STRATEGY = os.getenv("CHUNKING_STRATEGY", "recursive")
+
+QDRANT_HOST = os.getenv("QDRANT_HOST", "localhost")
+QDRANT_PORT = int(os.getenv("QDRANT_PORT", 6333))
+
+QDRANT_COLLECTION_NAME = os.getenv("QDRANT_COLLECTION_NAME", "insurance_documents")
+QDRANT_VECTOR_SIZE = os.getenv("QDRANT_VECTOR_SIZE", 1024)
+QDRANT_DISTANCE = os.getenv("QDRANT_DISTANCE", "cosine")

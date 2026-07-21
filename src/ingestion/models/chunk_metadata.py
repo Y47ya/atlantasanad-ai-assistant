@@ -14,5 +14,5 @@ class ChunkMetadata:
     chunk_id: str
     chunk_index: int
 
-    sematic: SemanticMetadata | None = None
+    semantic: SemanticMetadata | None = None
     indexing: IndexingMetadata | None = None

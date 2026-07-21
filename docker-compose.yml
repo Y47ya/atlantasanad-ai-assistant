@@ -1,0 +1,9 @@
+services:
+  qdrant:
+    image: ${QDRANT_IMAGE}
+    container_name: ${QDRANT_CONTAINER_NAME}
+    restart: unless-stopped
+    ports:
+      - "${QDRANT_PORT}:6333"
+    volumes:
+      - ${QDRANT_STORAGE}:/qdrant/storageage

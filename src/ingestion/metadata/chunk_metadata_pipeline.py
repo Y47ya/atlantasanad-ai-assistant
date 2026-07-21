@@ -21,4 +21,6 @@ class ChunkMetadataPipeline:
 
             chunk.metadata.semantic = semantic
 
+            print(chunk.metadata)
+
         return document

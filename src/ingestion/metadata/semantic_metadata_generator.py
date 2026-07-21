@@ -1,8 +1,6 @@
 import json
 from src.ingestion.models.semantic_metadata import SemanticMetadata
-from src.ingestion.tools import get_llm_generation_info
 from src.llm.base_llm import BaseLLM
-from src.llm.prompts import SEMANTIC_METADATA_PROMPT
 
 
 class SemanticMetadataGenerator:

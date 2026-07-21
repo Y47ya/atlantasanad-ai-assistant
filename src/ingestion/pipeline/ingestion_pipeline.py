@@ -1,7 +1,5 @@
-from pathlib import Path
-
-from httpx import _main
-
+from json import dumps, dump, load
+from dacite import from_dict
 from src.config.settings import *
 from src.ingestion.chunking.chunking_pipeline import ChunkingPipeline
 from src.ingestion.chunking.recursive_chuner import RecursiveChunker
@@ -11,11 +9,14 @@ from src.ingestion.embeding.hugging_face_embeding import HuggingFaceEmbedding
 from src.ingestion.metadata.chunk_metadata_pipeline import ChunkMetadataPipeline
 from src.ingestion.metadata.section_metadata_pipeline import SectionMetadataPipeline
 from src.ingestion.metadata.semantic_metadata_generator import SemanticMetadataGenerator
+from src.ingestion.models import document
 from src.ingestion.models.document import Document
 from src.ingestion.parser.docling_converter import DoclingAdapter
-from src.llm.base_llm import BaseLLM
+from src.ingestion.storage import qdrant_pipeline, qdrant_store
+from src.ingestion.storage.qdrant_pipeline import QdrantPipeline
+from src.ingestion.storage.qdrant_store import QdrantStore
 from src.llm.ollama import OllamaLLM
-from src.llm.prompts import SEMANTIC_METADATA_PROMPT
+from src.config.prompts import SEMANTIC_METADATA_PROMPT
 
 
 class IngestionPipeline:
@@ -28,6 +29,7 @@ class IngestionPipeline:
             chunking_pipeline: ChunkingPipeline,
             chunk_metadata_pipeline: ChunkMetadataPipeline,
             embedding_pipeline: EmbeddingPipeline,
+            qdrant_pipeline: QdrantPipeline
     ):
         self.adapter = adapter
         self.cleaner = cleaner
@@ -35,19 +37,47 @@ class IngestionPipeline:
         self.chunking_pipeline = chunking_pipeline
         self.chunk_metadata_pipeline = chunk_metadata_pipeline
         self.embedding_pipeline = embedding_pipeline
+        self.qdrant_pipeline = qdrant_pipeline
 
-    def process(self, pdf_path: Path) -> Document:
-        document = self.adapter.parse(pdf_path)
+    def process(self, document_path: Path) -> Document:
+        # document = self.adapter.parse(pdf_path)
+        #
+        # document = self.cleaner.clean(document)
+        #
+        # document = self.section_metadata_pipeline.process(document)
+        #
+        # print(
+        #     dumps(
+        #         document.to_dict(),
+        #         indent=4,
+        #         ensure_ascii=False,
+        #         default=str,
+        #     )
+        # )
+        #
+        # document = self.chunking_pipeline.process(document)
+        #
+        # document = self.chunk_metadata_pipeline.process(document)
+        #
+        # print(
+        #     dumps(
+        #         document.to_dict(),
+        #         indent=4,
+        #         ensure_ascii=False,
+        #         default=str,
+        #     )
+        # )
+        #
+        # document = self.embedding_pipeline.process(document)
 
-        document = self.cleaner.clean(document)
+        document_path = Path(
+            PROJECT_ROOT / "tests/processed_data/Véhicule-pro-splited-version.json"
+        )
 
-        document = self.section_metadata_pipeline.process(document)
 
-        document = self.chunking_pipeline.process(document)
+        document = Document.load_json(document_path)
 
-        document = self.chunk_metadata_pipeline.process(document)
-
-        document = self.embedding_pipeline.process(document)
+        document = self.qdrant_pipeline.process(document)
 
         return document
 
@@ -58,19 +88,23 @@ def main():
     print("Starting ingestion pipeline")
     print("=" * 80)
 
+    # pdf_path = Path(
+    #     PROJECT_ROOT / "data/raw/assurance_automobile_fr_version_finale.pdf"
+    # )
+
     pdf_path = Path(
-        PROJECT_ROOT / "data/raw/Véhicule_pro.pdf"
+        PROJECT_ROOT / "data/raw/Véhicule-pro-splited-version.pdf"
     )
 
-    print(f"[1/8] PDF: {pdf_path.name}")
+    print(f"[1/9] PDF: {pdf_path.name}")
 
-    print("[2/8] Initializing parser...")
+    print("[2/9] Initializing parser...")
     adapter = DoclingAdapter()
 
-    print("[3/8] Initializing cleaner...")
+    print("[3/9] Initializing cleaner...")
     cleaner = DocumentCleaner()
 
-    print("[4/8] Initializing LLM...")
+    print("[4/9] Initializing LLM...")
     llm = OllamaLLM(
         model=OLLAMA_MODEL,
         provider=OLLAMA_PROVIDER,
@@ -81,7 +115,7 @@ def main():
 
     semantic_generator = SemanticMetadataGenerator(llm)
 
-    print("[5/8] Initializing metadata pipelines...")
+    print("[5/9] Initializing metadata pipelines...")
 
     section_metadata_pipeline = SectionMetadataPipeline(
         semantic_generator,
@@ -93,7 +127,7 @@ def main():
         SEMANTIC_METADATA_PROMPT,
     )
 
-    print("[6/8] Initializing chunker...")
+    print("[6/9] Initializing chunker...")
 
     chunker = RecursiveChunker(
         CHUNK_SIZE,
@@ -103,7 +137,7 @@ def main():
 
     chunking_pipeline = ChunkingPipeline(chunker)
 
-    print("[7/8] Loading embedding model...")
+    print("[7/9] Loading embedding model...")
 
     embedding_model = HuggingFaceEmbedding(
         model_name=EMBEDDING_MODEL,
@@ -114,7 +148,19 @@ def main():
         chunking_strategy=CHUNKING_STRATEGY,
     )
 
-    print("[8/8] Building ingestion pipeline...")
+    print("[8/9] Building ingestion pipeline...")
+
+    qdrant_store = QdrantStore(
+        host=QDRANT_HOST,
+        port=QDRANT_PORT,
+        collection_name=QDRANT_COLLECTION_NAME,
+        vector_size=QDRANT_VECTOR_SIZE,
+        distance=QDRANT_DISTANCE
+    )
+
+    qdrant_pipeline = QdrantPipeline(
+        qdrant_store
+    )
 
     ingestion_pipeline = IngestionPipeline(
         adapter=adapter,
@@ -123,6 +169,7 @@ def main():
         chunking_pipeline=chunking_pipeline,
         chunk_metadata_pipeline=chunk_metadata_pipeline,
         embedding_pipeline=embedding_pipeline,
+        qdrant_pipeline=qdrant_pipeline
     )
 
     print()
@@ -141,6 +188,15 @@ def main():
     print(f"Pages: {document.pages_count}")
     print(f"Sections: {len(document.sections)}")
     print(f"Chunks: {len(document.chunks)}")
+
+    output_dir = PROJECT_ROOT / "tests" / "processed_data"
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    output_file = output_dir / f"{document.file_name.removesuffix('.pdf')}.json"
+
+    document.save_json(output_file)
+
+    print(f"Saved processed document to {output_file}")
 
 
 if __name__ == "__main__":
