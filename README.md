@@ -21,31 +21,6 @@ The ingestion pipeline transforms raw PDF documents into searchable vectors stor
 
 ![Architecture](docs/architecture/architecture.drawio.png)
 
-```
-PDF
- │
- ▼
-Document Parsing
- │
- ▼
-Cleaning
- │
- ▼
-Section Metadata Generation (LLM)
- │
- ▼
-Chunking
- │
- ▼
-Chunk Metadata Generation (LLM)
- │
- ▼
-Embedding Generation
- │
- ▼
-Qdrant Storage
-```
-
 ---
 
 # Current Pipeline
