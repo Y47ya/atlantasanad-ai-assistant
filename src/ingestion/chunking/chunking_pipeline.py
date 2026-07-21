@@ -1,17 +1,12 @@
 from json import dumps
 from pathlib import Path
 
-from docling.datamodel.service import chunking
-
-from src.config.settings import PROJECT_ROOT, CHUNK_SIZE, CHUNK_OVERLAP, CHUNK_SEPARATORS
+from src.ingestion.config.settings import PROJECT_ROOT, CHUNK_SIZE, CHUNK_OVERLAP, CHUNK_SEPARATORS
 from src.ingestion.chunking.base_chunker import BaseChunker
 from src.ingestion.chunking.recursive_chuner import RecursiveChunker
 from src.ingestion.cleaner.document_cleaner import DocumentCleaner
-from src.ingestion.metadata.section_metadata_pipeline import SectionMetadataPipeline
-from src.ingestion.metadata.semantic_metadata_generator import SemanticMetadataGenerator
 from src.ingestion.models.document import Document
 from src.ingestion.parser.docling_converter import DoclingAdapter
-from src.llm.ollama import *
 
 
 class ChunkingPipeline:

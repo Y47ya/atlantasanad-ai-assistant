@@ -1,8 +1,8 @@
 from pathlib import Path
-from src.config.loader import load_config
 import os
 from dotenv import load_dotenv
 
+from src.ingestion.tools import load_config
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 

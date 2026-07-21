@@ -1,22 +1,18 @@
-from json import dumps, dump, load
-from dacite import from_dict
-from src.config.settings import *
+from src.ingestion.config.settings import *
 from src.ingestion.chunking.chunking_pipeline import ChunkingPipeline
 from src.ingestion.chunking.recursive_chuner import RecursiveChunker
 from src.ingestion.cleaner.document_cleaner import DocumentCleaner
-from src.ingestion.embeding.embeding_pipeline import EmbeddingPipeline
-from src.ingestion.embeding.hugging_face_embeding import HuggingFaceEmbedding
+from src.embeding.embeding_pipeline import EmbeddingPipeline
+from src.embeding.hugging_face_embeding import HuggingFaceEmbedding
 from src.ingestion.metadata.chunk_metadata_pipeline import ChunkMetadataPipeline
 from src.ingestion.metadata.section_metadata_pipeline import SectionMetadataPipeline
 from src.ingestion.metadata.semantic_metadata_generator import SemanticMetadataGenerator
-from src.ingestion.models import document
 from src.ingestion.models.document import Document
 from src.ingestion.parser.docling_converter import DoclingAdapter
-from src.ingestion.storage import qdrant_pipeline, qdrant_store
 from src.ingestion.storage.qdrant_pipeline import QdrantPipeline
 from src.ingestion.storage.qdrant_store import QdrantStore
-from src.llm.ollama import OllamaLLM
-from src.config.prompts import SEMANTIC_METADATA_PROMPT
+from src.ingestion.llms.ollama import OllamaLLM
+from src.ingestion.config.prompts import SEMANTIC_METADATA_PROMPT
 
 
 class IngestionPipeline:

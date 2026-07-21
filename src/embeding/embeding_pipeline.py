@@ -1,11 +1,11 @@
 from datetime import UTC, datetime
 
-from src.ingestion.embeding.base_embeding import BaseEmbedding
+from src.embeding.base_embeding import BaseEmbedding
 from src.ingestion.models.chunk import Chunk
 from src.ingestion.models.document import Document
 from src.ingestion.models.indexing_metadata import IndexingMetadata
 from src.ingestion.tools import generate_text_hash
-from src.config.prompts import EMBEDDING_TEMPLATE
+from src.ingestion.config.prompts import EMBEDDING_TEMPLATE
 
 
 class EmbeddingPipeline:

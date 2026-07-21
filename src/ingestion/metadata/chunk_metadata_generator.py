@@ -2,7 +2,7 @@ import json
 
 from src.ingestion.models.semantic_metadata import SemanticMetadata
 from src.ingestion.tools import get_llm_generation_info
-from src.llm.base_llm import BaseLLM
+from src.ingestion.llms.base_llm import BaseLLM
 
 
 class ChunkMetadataGenerator:

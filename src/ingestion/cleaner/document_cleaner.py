@@ -1,8 +1,5 @@
 import re
-from pathlib import Path
 
-from src.config.settings import PROJECT_ROOT
-from src.ingestion.parser.docling_converter import DoclingAdapter
 from src.ingestion.models.document import Document
 from src.ingestion.models.section import ContentType
 

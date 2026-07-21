@@ -1,6 +1,6 @@
 from sentence_transformers import SentenceTransformer
 
-from src.ingestion.embeding.base_embeding import BaseEmbedding
+from src.embeding.base_embeding import BaseEmbedding
 
 
 class HuggingFaceEmbedding(BaseEmbedding):

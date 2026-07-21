@@ -5,7 +5,12 @@ from pathlib import Path
 from datetime import datetime
 from src.ingestion.models.llm_generation import LLMGenerationInfo
 from src.ingestion.models.section import ContentType
+import yaml
 
+
+def load_config(path: str):
+    with open(path, "r") as file:
+        return yaml.safe_load(file)
 
 def generate_document_id(pdf_path: Path) -> str:
     hasher = hashlib.sha256()

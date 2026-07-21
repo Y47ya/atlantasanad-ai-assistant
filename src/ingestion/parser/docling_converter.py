@@ -3,7 +3,7 @@ from docling.document_converter import DocumentConverter
 from docling_core.types import DoclingDocument
 from docling_core.types.doc import DocItemLabel
 from src.ingestion.models.document import Document
-from src.config.settings import PROJECT_ROOT
+from src.ingestion.config.settings import PROJECT_ROOT
 from src.ingestion.models.section import Section, ContentBlock, ContentType
 from src.ingestion.tools import generate_document_id
 
