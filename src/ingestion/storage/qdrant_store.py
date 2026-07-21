@@ -1,5 +1,3 @@
-from uuid import uuid5, NAMESPACE_URL
-from antlr4.tree import Chunk
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance
 from qdrant_client.models import VectorParams
@@ -9,14 +7,14 @@ from src.ingestion.storage.base_vector_store import BaseVectorStore
 from qdrant_client.models import PointStruct
 
 from src.ingestion.tools import chunk_hash_to_point_id
+from qdrant_client import QdrantClient
 
 
 class QdrantStore(BaseVectorStore):
 
     def __init__(
         self,
-        host: str,
-        port: int,
+        client: QdrantClient,
         collection_name: str,
         vector_size: int,
         distance: str
@@ -25,10 +23,7 @@ class QdrantStore(BaseVectorStore):
         self.collection_name = collection_name
         self.vector_size = vector_size
 
-        self.client = QdrantClient(
-            host=host,
-            port=port,
-        )
+        self.client = client
 
         self.distance = distance
 

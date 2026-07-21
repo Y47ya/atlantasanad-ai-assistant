@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from src.ingestion.models.chunk_metadata import ChunkMetadata
 from src.ingestion.models.section import Section
 

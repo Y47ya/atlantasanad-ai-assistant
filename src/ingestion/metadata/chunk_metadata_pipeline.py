@@ -1,4 +1,3 @@
-from src.ingestion.metadata.chunk_metadata_generator import ChunkMetadataGenerator
 from src.ingestion.metadata.semantic_metadata_generator import SemanticMetadataGenerator
 from src.ingestion.models.document import Document
 

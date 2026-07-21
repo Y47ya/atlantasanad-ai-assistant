@@ -1,7 +1,7 @@
 import requests
 
 from src.ingestion.config.settings import OLLAMA_MODEL
-from src.ingestion.llms.base_llm import BaseLLM
+from src.llms.base_llm import BaseLLM
 
 
 class OllamaLLM(BaseLLM):

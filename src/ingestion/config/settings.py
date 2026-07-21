@@ -4,33 +4,38 @@ from dotenv import load_dotenv
 
 from src.ingestion.tools import load_config
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
 load_dotenv(PROJECT_ROOT / ".env")
 
-PARSER_CONFIG = load_config(
-    PROJECT_ROOT / "configs/ingestion/parser.yaml"
-)
+# PARSER_CONFIG = load_config(
+#     PROJECT_ROOT / "configs/ingestion/parser.yaml"
+# )
 
-OLLAMA_PULL_IF_MISSING = os.getenv("OLLAMA_PULL_IF_MISSING", True)
-OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
-OLLAMA_PROVIDER = os.getenv("OLLAMA_PROVIDER", "ollama")
+# print(PROJECT_ROOT)
+# print(PROJECT_ROOT / ".env")
+# print((PROJECT_ROOT / ".env").exists())
+
+OLLAMA_PULL_IF_MISSING = os.getenv("OLLAMA_PULL_IF_MISSING")
+OLLAMA_HOST = os.getenv("OLLAMA_HOST")
+OLLAMA_PROVIDER = os.getenv("OLLAMA_PROVIDER")
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL")
-OLLAMA_TIMEOUT = int(os.getenv("OLLAMA_TIMEOUT", 300))
-OLLAMA_TEMPERATURE = float(os.getenv("OLLAMA_TEMPERATURE", 0.0)) # Almost deterministic, 0 creativeness
+OLLAMA_TIMEOUT = int(os.getenv("OLLAMA_TIMEOUT"))
+OLLAMA_TEMPERATURE = float(os.getenv("OLLAMA_TEMPERATURE")) # Almost deterministic, 0 creativeness
 
-CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", 512))
-CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", 100))
+CHUNK_SIZE = int(os.getenv("CHUNK_SIZE"))
+CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP"))
 
-separators_raw = os.getenv("CHUNK_SEPARATORS", "\n\n|||\n|||. |||! |||? |||; |||, ||| |||")
+separators_raw = os.getenv("CHUNK_SEPARATORS")
 CHUNK_SEPARATORS = separators_raw.split("|||")
 
-EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "BAAI/bge-m3")
-CHUNKING_STRATEGY = os.getenv("CHUNKING_STRATEGY", "recursive")
+EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL")
+CHUNKING_STRATEGY = os.getenv("CHUNKING_STRATEGY")
 
-QDRANT_HOST = os.getenv("QDRANT_HOST", "localhost")
-QDRANT_PORT = int(os.getenv("QDRANT_PORT", 6333))
+QDRANT_HOST = os.getenv("QDRANT_HOST")
+QDRANT_PORT = int(os.getenv("QDRANT_PORT"))
 
-QDRANT_COLLECTION_NAME = os.getenv("QDRANT_COLLECTION_NAME", "insurance_documents")
-QDRANT_VECTOR_SIZE = os.getenv("QDRANT_VECTOR_SIZE", 1024)
+QDRANT_COLLECTION_NAME = os.getenv("QDRANT_COLLECTION_NAME")
+QDRANT_VECTOR_SIZE = os.getenv("QDRANT_VECTOR_SIZE")
 QDRANT_DISTANCE = os.getenv("QDRANT_DISTANCE", "cosine")
+

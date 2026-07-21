@@ -1,6 +1,5 @@
-from dataclasses import dataclass, field, asdict, is_dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
-from enum import Enum
 from json import dump, dumps, load
 from pathlib import Path
 
@@ -8,7 +7,7 @@ from dacite import Config, from_dict
 
 from src.ingestion.models.chunk import Chunk
 from src.ingestion.models.section import Section, ContentType
-from src.ingestion.tools import serialize, to_json, parse_content_type
+from src.ingestion.tools import to_json, parse_content_type
 
 
 @dataclass

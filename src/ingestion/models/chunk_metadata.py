@@ -1,8 +1,6 @@
-from dataclasses import dataclass, field
-from datetime import datetime
+from dataclasses import dataclass
 
 from src.ingestion.models.indexing_metadata import IndexingMetadata
-from src.ingestion.models.llm_generation import LLMGenerationInfo
 from src.ingestion.models.semantic_metadata import SemanticMetadata
 
 

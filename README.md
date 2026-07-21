@@ -223,44 +223,73 @@ src/
 
 ---
 
-# Current Progress
+## 🚧 Current Progress
 
-Completed
+### ✅ Ingestion Pipeline
+The ingestion pipeline is fully implemented and modular.
 
-- PDF parsing
-- Document model
-- Cleaning pipeline
-- Section metadata generation
-- Recursive chunking
-- Chunk metadata generation
-- Embedding generation
-- Qdrant integration
-- Complete ingestion pipeline
+- PDF parsing (Docling)
+- Document cleaning
+- Hierarchical document reconstruction
+- Section-based chunking
+- Section semantic metadata generation
+- Chunk semantic metadata generation
+- Embedding generation (BAAI/bge-m3)
+- Indexing metadata generation
+- JSON persistence
+- Vector storage in Qdrant
 
 ---
 
-# Next Steps
+### ✅ Vector Database
 
-- Retrieval pipeline
-- Hybrid Search
+- Qdrant integration
+- Automatic collection creation
+- Payload generation
+- Batch upsert
+- UUID point identifiers
+
+---
+
+### ✅ Retrieval Pipeline
+
+Implemented semantic retrieval using:
+
+- BAAI/bge-m3 query embeddings
+- Qdrant vector search
+- Ranked similarity search (Top-K)
+
+Current retrieval returns the expected document sections with similarity scores.
+
+Example:
+
+| Score | Retrieved Section |
+|------:|-------------------|
+| 0.655 | GARANTIES INNOVANTES |
+| 0.607 | GARANTIE OBLIGATOIRE |
+| 0.531 | DES GARANTIES QUI FONT LA DIFFERENCE |
+| 0.486 | POURQUOI CHOISIR AUTO+ |
+
+The retrieval pipeline successfully returns relevant chunks together with rich metadata such as:
+
+- document id
+- file name
+- section title
+- page
+- section summary
+- section keywords
+- chunk summary
+- chunk keywords
+
+---
+
+## 📌 Next Steps
+
+- Hybrid Retrieval (Dense + BM25)
 - Metadata filtering
 - Query rewriting
-- Reranking
-- Context builder
-- Prompt builder
-- Answer generation
-- API integration
-- Agent orchestration
+- Context reranking
+- Prompt construction
+- RAG pipeline
+- API integration through AI Agent
 - Evaluation framework
-
----
-
-# Status
-
-Current milestone:
-
-✅ Ingestion Pipeline Completed
-
-Next milestone:
-
-➡ Retrieval Pipeline

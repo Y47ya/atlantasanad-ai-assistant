@@ -1,6 +1,5 @@
 from datetime import datetime
 from abc import ABC, abstractmethod
-from typing import Any
 
 from src.ingestion.models.llm_generation import LLMGenerationInfo
 
