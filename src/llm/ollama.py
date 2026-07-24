@@ -1,7 +1,7 @@
 import requests
 
-from src.ingestion.config.settings import OLLAMA_MODEL
-from src.llms.base_llm import BaseLLM
+from src.config.settings import OLLAMA_MODEL
+from src.llm.base_llm import BaseLLM
 
 
 class OllamaLLM(BaseLLM):
@@ -79,7 +79,7 @@ class OllamaLLM(BaseLLM):
         return response.json()["response"].strip()
 
 
-# llms = OllamaLLM(
+# llm = OllamaLLM(
 #     model=OLLAMA_MODEL,
 #     provider=OLLAMA_PROVIDER,
 #     host=OLLAMA_HOST,
@@ -87,6 +87,6 @@ class OllamaLLM(BaseLLM):
 #     temperature=OLLAMA_TEMPERATURE
 # )
 #
-# answer = llms.generate("Hello!")
+# answer = llm.generate("Hello!")
 #
 # print(answer)

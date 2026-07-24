@@ -5,7 +5,7 @@ from src.ingestion.models.chunk import Chunk
 from src.ingestion.models.document import Document
 from src.ingestion.models.indexing_metadata import IndexingMetadata
 from src.ingestion.tools import generate_text_hash
-from src.ingestion.config.prompts import EMBEDDING_TEMPLATE
+from src.llm.prompts import EMBEDDING_TEMPLATE
 
 
 class EmbeddingPipeline:
@@ -61,3 +61,4 @@ class EmbeddingPipeline:
             )
 
         return document
+

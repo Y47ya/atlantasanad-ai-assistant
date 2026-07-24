@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 from src.ingestion.tools import load_config
 
-PROJECT_ROOT = Path(__file__).resolve().parents[3]
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 load_dotenv(PROJECT_ROOT / ".env")
 
@@ -38,4 +38,8 @@ QDRANT_PORT = int(os.getenv("QDRANT_PORT"))
 QDRANT_COLLECTION_NAME = os.getenv("QDRANT_COLLECTION_NAME")
 QDRANT_VECTOR_SIZE = os.getenv("QDRANT_VECTOR_SIZE")
 QDRANT_DISTANCE = os.getenv("QDRANT_DISTANCE", "cosine")
+
+RERANKER_MODEL = os.getenv("RERANKER_MODEL")
+RETRIEVER_TOP_K = int(os.getenv("RETRIEVER_TOP_K"))
+RERANKER_TOP_K = int(os.getenv("RERANKER_TOP_K"))
 

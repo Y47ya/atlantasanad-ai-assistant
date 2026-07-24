@@ -38,4 +38,4 @@ class Chunk:
                 self.metadata.semantic.keywords,
 
             "indexed_at":str(self.metadata.indexing.indexed_at),
-}
+    }

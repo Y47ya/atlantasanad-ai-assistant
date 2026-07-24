@@ -1,7 +1,7 @@
 from json import dumps
 from pathlib import Path
 
-from src.ingestion.config.settings import PROJECT_ROOT, CHUNK_SIZE, CHUNK_OVERLAP, CHUNK_SEPARATORS
+from src.config.settings import PROJECT_ROOT, CHUNK_SIZE, CHUNK_OVERLAP, CHUNK_SEPARATORS
 from src.ingestion.chunking.base_chunker import BaseChunker
 from src.ingestion.chunking.recursive_chuner import RecursiveChunker
 from src.ingestion.cleaner.document_cleaner import DocumentCleaner

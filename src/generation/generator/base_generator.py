@@ -1,14 +1,14 @@
 from abc import ABC, abstractmethod
 
+from src.generation.models.answer import Answer
 from src.retrieval.models.retrieval_result import RetrievalResult
 
 
-class BaseRetriever(ABC):
+class BaseGenerator(ABC):
 
     @abstractmethod
-    def retrieve(
+    def generate(
         self,
-        query_vector: list[float],
-        top_k: int,
-    ) -> list[RetrievalResult]:
+        retrieval_result: RetrievalResult,
+    ) -> Answer:
         pass

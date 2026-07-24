@@ -1,4 +1,3 @@
-from qdrant_client import QdrantClient
 from qdrant_client.models import Distance
 from qdrant_client.models import VectorParams
 
@@ -8,6 +7,8 @@ from qdrant_client.models import PointStruct
 
 from src.ingestion.tools import chunk_hash_to_point_id
 from qdrant_client import QdrantClient
+
+from src.retrieval.models.retrieved_chunk import RetrievedChunk
 
 
 class QdrantStore(BaseVectorStore):
@@ -49,7 +50,7 @@ class QdrantStore(BaseVectorStore):
             ),
         )
 
-    def _chunk_to_point(self, chunk: Chunk) -> PointStruct:
+    def chunk_to_point(self, chunk: Chunk) -> PointStruct:
         if chunk.embedding is None:
             raise ValueError(
                 f"Chunk {chunk.metadata.chunk_id} has no embedding."
@@ -66,7 +67,7 @@ class QdrantStore(BaseVectorStore):
     def upsert(self, chunks: list[Chunk]):
 
         points = [
-            self._chunk_to_point(chunk)
+            self.chunk_to_point(chunk)
             for chunk in chunks
         ]
 
@@ -76,6 +77,31 @@ class QdrantStore(BaseVectorStore):
             collection_name=self.collection_name,
             wait=True,
             points=points,
+        )
+
+    def point_to_chunk(self, point) -> RetrievedChunk:
+
+        payload = point.payload
+
+        return RetrievedChunk(
+            text=payload["text"],
+            score=point.score,
+
+            chunk_id=payload["chunk_id"],
+            chunk_index=payload["chunk_index"],
+            document_id=payload["document_id"],
+            file_name=payload["file_name"],
+            page=payload["page"],
+
+            section_title=payload["section_title"],
+
+            section_summary=payload["section_summary"],
+            section_keywords=payload["section_keywords"],
+
+            chunk_summary=payload["chunk_summary"],
+            chunk_keywords=payload["chunk_keywords"],
+
+            indexed_at=payload["indexed_at"]
         )
 
     def delete_document(self, document_id: str):

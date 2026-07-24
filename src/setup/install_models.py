@@ -1,6 +1,6 @@
 import requests
 
-from src.ingestion.config.settings import OLLAMA_MODEL, OLLAMA_HOST
+from src.config.settings import OLLAMA_MODEL, OLLAMA_HOST
 
 
 def pull_model(model: str, host: str):
