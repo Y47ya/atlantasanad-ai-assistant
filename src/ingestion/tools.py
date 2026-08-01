@@ -25,13 +25,20 @@ import hashlib
 
 def generate_chunk_id(
     document_id: str,
-    section_title: str,
+    # section_index: int,
     chunk_index: int,
     text: str,
 ) -> str:
-    return hashlib.sha256(
-        f"{document_id}:{section_title}:{chunk_index}:{text}".encode("utf-8")
-    ).hexdigest()
+    import hashlib
+
+    value = (
+        f"{document_id}|"
+        # f"{section_index}|"
+        f"{chunk_index}|"
+        f"{text}"
+    )
+
+    return hashlib.sha256(value.encode("utf-8")).hexdigest()
 
 def get_llm_generation_info(llm)-> LLMGenerationInfo:
     return LLMGenerationInfo(

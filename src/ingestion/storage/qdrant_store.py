@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from qdrant_client.models import Distance
 from qdrant_client.models import VectorParams
 
@@ -40,6 +42,7 @@ class QdrantStore(BaseVectorStore):
         }
 
         if self.collection_name in names:
+            print(f"{self.collection_name} already exists.")
             return
 
         self.client.create_collection(
@@ -49,6 +52,7 @@ class QdrantStore(BaseVectorStore):
                 distance=Distance.COSINE,
             ),
         )
+        print(f"{self.collection_name} created.")
 
     def chunk_to_point(self, chunk: Chunk) -> PointStruct:
         if chunk.embedding is None:
@@ -58,11 +62,15 @@ class QdrantStore(BaseVectorStore):
 
         id = chunk_hash_to_point_id(chunk.metadata.chunk_id)
 
-        return PointStruct(
+        point = PointStruct(
             id=id,
             vector=chunk.embedding,
             payload=chunk.to_payload()
         )
+
+        print(f"{point.id} embedded.")
+
+        return point
 
     def upsert(self, chunks: list[Chunk]):
 
@@ -70,8 +78,6 @@ class QdrantStore(BaseVectorStore):
             self.chunk_to_point(chunk)
             for chunk in chunks
         ]
-
-        print(points)
 
         self.client.upsert(
             collection_name=self.collection_name,

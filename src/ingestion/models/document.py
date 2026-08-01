@@ -33,13 +33,19 @@ class Document:
         )
 
     def save_json(self, path: str | Path) -> None:
-        with open(path, "w", encoding="utf-8") as f:
+        path = Path(path)
+
+        path.parent.mkdir(parents=True, exist_ok=True)
+
+        with path.open("w", encoding="utf-8") as f:
             dump(
                 self.to_dict(),
                 f,
-                indent=4,
-                ensure_ascii=False
+                indent=2,
+                ensure_ascii=False,
             )
+
+        print(f"{path} saved.")
 
     @classmethod
     def load_json(cls, path: str | Path) -> "Document":

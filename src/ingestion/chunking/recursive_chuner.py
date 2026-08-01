@@ -13,30 +13,33 @@ class RecursiveChunker(BaseChunker):
         self,
         chunk_size: int,
         chunk_overlap: int,
-        separators: list[str]
+        separators: list[str],
     ):
         self.splitter = RecursiveCharacterTextSplitter(
             chunk_size=chunk_size,
             chunk_overlap=chunk_overlap,
-            separators=separators
+            separators=separators,
         )
 
     def chunk(
-            self,
-            document_id: str,
-            file_name: str,
-            section: Section,
+        self,
+        document_id: str,
+        file_name: str,
+        section: Section,
     ) -> list[Chunk]:
-        text = section.get_section_content()
-        split_chunks = self.splitter.split_text(text)
 
-        chunks = []
+        split_chunks = self.splitter.split_text(
+            section.get_section_content()
+        )
 
-        for index, chunk_text in enumerate(split_chunks):
+        chunks: list[Chunk] = []
+
+        for chunk_index, chunk_text in enumerate(split_chunks):
+
             chunk_id = generate_chunk_id(
                 document_id=document_id,
-                section_title=section.title,
-                chunk_index=index,
+                # section_index=section.index,
+                chunk_index=chunk_index,
                 text=chunk_text,
             )
 
@@ -48,7 +51,7 @@ class RecursiveChunker(BaseChunker):
                         document_id=document_id,
                         file_name=file_name,
                         chunk_id=chunk_id,
-                        chunk_index=index,
+                        chunk_index=chunk_index,
                     ),
                 )
             )

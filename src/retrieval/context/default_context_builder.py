@@ -21,7 +21,6 @@ class DefaultContextBuilder(BaseContextBuilder):
                     
                     Document: {chunk.file_name}
                     Page: {chunk.page}
-                    Section: {chunk.section_title}
                     
                     Section Summary:
                     {chunk.section_summary}

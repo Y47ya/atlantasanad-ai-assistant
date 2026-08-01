@@ -1,5 +1,7 @@
 from datetime import UTC, datetime
+from pathlib import Path
 
+from src.config.settings import PROJECT_ROOT
 from src.embeding.base_embeding import BaseEmbedding
 from src.ingestion.models.chunk import Chunk
 from src.ingestion.models.document import Document
@@ -23,17 +25,19 @@ class EmbeddingPipeline:
         chunk: Chunk,
     ) -> str:
 
+        section_semantic = chunk.section.metadata.semantic
+        chunk_semantic = chunk.metadata.semantic
+
         return EMBEDDING_TEMPLATE.format(
             document=chunk.metadata.file_name,
-            section=chunk.section.title,
-            section_summary=chunk.section.metadata.semantic.summary,
-            section_keywords=", ".join(
-                chunk.section.metadata.semantic.keywords
-            ),
-            chunk_summary=chunk.metadata.semantic.summary,
-            chunk_keywords=", ".join(
-                chunk.metadata.semantic.keywords
-            ),
+
+            section_display_title=section_semantic.display_title,
+            section_summary=section_semantic.summary,
+            section_keywords=", ".join(section_semantic.keywords),
+
+            chunk_summary=chunk_semantic.summary,
+            chunk_keywords=", ".join(chunk_semantic.keywords),
+
             chunk=chunk.text,
         )
 
@@ -42,11 +46,17 @@ class EmbeddingPipeline:
         document: Document,
     ) -> Document:
 
+        file_name = document.file_name
+        json_path = Path(PROJECT_ROOT / "data" / "processed_data" / "embedding_lvl" / f"{file_name}.json")
+
+        if json_path.exists():
+            print(f"Loading embedding level document: {json_path}")
+            document = Document.load_json(json_path)
+            return document
+
         for chunk in document.chunks:
 
-            embedding_text = self._build_embedding_text(
-                chunk
-            )
+            embedding_text = self._build_embedding_text(chunk)
 
             chunk.embedding = self.embedding_model.embed(
                 embedding_text
@@ -59,6 +69,8 @@ class EmbeddingPipeline:
                 hash=generate_text_hash(chunk.text),
                 indexed_at=datetime.now(UTC),
             )
+
+        document.save_json(json_path)
 
         return document
 

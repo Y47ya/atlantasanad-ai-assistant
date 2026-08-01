@@ -4,6 +4,7 @@ from src.ingestion.models.llm_generation import LLMGenerationInfo
 
 @dataclass
 class SemanticMetadata:
+    display_title: str = ""
 
     summary: str = ""
 

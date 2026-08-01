@@ -18,7 +18,6 @@ class ContentBlock:
 
 @dataclass
 class Section:
-    title: str
     page: int
     content: list[ContentBlock] = field(default_factory=list)
     metadata: SectionMetadata = field(default_factory=SectionMetadata)
@@ -29,4 +28,6 @@ class Section:
                 block.content
                 for block in self.content
             )
+
+
 

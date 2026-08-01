@@ -1,20 +1,40 @@
 from pathlib import Path
-from docling.document_converter import DocumentConverter
+
+from docling.backend.pypdfium2_backend import PyPdfiumDocumentBackend
+from docling.datamodel.base_models import InputFormat
+from docling.datamodel.pipeline_options import PdfPipelineOptions, EasyOcrOptions
+from docling.document_converter import DocumentConverter, PdfFormatOption
 from docling_core.types import DoclingDocument
 from docling_core.types.doc import DocItemLabel
 from src.ingestion.models.document import Document
 from src.config.settings import PROJECT_ROOT
 from src.ingestion.models.section import Section, ContentBlock, ContentType
+from src.ingestion.parser.base_parser import BaseParser
 from src.ingestion.tools import generate_document_id
+from docling.datamodel.pipeline_options import TableFormerMode
+
 
 
 # from tests.ingestion.parser_testor import file_path
 
 
-class DoclingAdapter:
+class DoclingAdapter(BaseParser):
 
     def __init__(self):
-        self.converter = DocumentConverter()
+        pipeline_options = PdfPipelineOptions()
+        pipeline_options.do_ocr = False  # backend pypdfium2 suffit pour les accents, pas besoin d'OCR
+        pipeline_options.do_table_structure = True
+        pipeline_options.table_structure_options.mode = TableFormerMode.ACCURATE
+        pipeline_options.table_structure_options.do_cell_matching = False  # teste aussi True
+
+        self.converter = DocumentConverter(
+            format_options={
+                InputFormat.PDF: PdfFormatOption(
+                    pipeline_options=pipeline_options,
+                    backend=PyPdfiumDocumentBackend,
+                )
+            }
+        )
 
     def looks_like_heading(self, item):
 
@@ -32,18 +52,25 @@ class DoclingAdapter:
 
         # result = self.converter.convert(pdf_path)
         # doc = result.document
+        # file_name = pdf_path.stem
+        # json_path = PROJECT_ROOT / "data" / "parsed_data" / f"{file_name}.json"
+        # doc.save_as_json(json_path)
 
         # Used only for debugging to reduce memory usage
         # read result's parsed content directly
-        file_name = pdf_path.name.split(".")[0]
-        output = Path(PROJECT_ROOT / f"tests/parsed_data/{file_name}.json")
-        try:
-            doc = DoclingDocument.load_from_json(output)
-        except:
+        file_name = pdf_path.stem
+        json_path = PROJECT_ROOT / "data" / "parsed_data" / f"{file_name}.json"
+
+        if json_path.exists():
+            print(f"Loading parsed document: {json_path}")
+            doc = DoclingDocument.load_from_json(json_path)
+
+        else:
+            print(f"Parsing PDF: {pdf_path}")
+
             result = self.converter.convert(pdf_path)
             doc = result.document
-            doc.save_as_json(output)
-            print("parsed file saved")
+            doc.save_as_json(json_path)
         # -------------------------------------------------
 
         pages_count = doc.num_pages()
@@ -57,22 +84,26 @@ class DoclingAdapter:
             pages_count=pages_count,
         )
 
-        current_section = None
+        current_section = Section(page=1)
+        document.sections.append(current_section)
 
         for item, _ in doc.iterate_items():
 
             page = item.prov[0].page_no if item.prov else 0
 
+            # Start a new section
             if self.looks_like_heading(item):
 
-                current_section = Section(
-                    title=item.text.strip(),
-                    page=page,
-                )
-                document.sections.append(current_section)
-                continue
+                current_section = Section(page=page)
 
-            if current_section is None:
+                current_section.content.append(
+                    ContentBlock(
+                        type=ContentType.TEXT,
+                        content=item.text.strip(),
+                    )
+                )
+
+                document.sections.append(current_section)
                 continue
 
             if item.label == DocItemLabel.TEXT:
@@ -102,17 +133,17 @@ class DoclingAdapter:
         return document
 
 
-# file_path = Path(PROJECT_ROOT / "data/raw/Véhicule_pro.pdf")
-# file_path1 = Path(PROJECT_ROOT / "data/raw/assurance_automobile_fr_version_finale.pdf")
+# # file_name = "Véhicule_pro"
+# file_name = "Conditions Générales Auto+ 04.2024_Word"
 #
-# parsed_data_dir = Path(PROJECT_ROOT / "tests/parsed_data")
+# file_path = Path(PROJECT_ROOT / f"data/raw/{file_name}.pdf")
 #
-# parsed_data_dir.parent.mkdir(exist_ok=True)
-# parsed_data_dir.mkdir(exist_ok=True)
+# output = Path(PROJECT_ROOT / f"data/parsed_data/{file_name}.json")
 #
-# docliing_adapter = DoclingAdapter()
+#
+# docling_adapter = DoclingAdapter()
 #
 # # docliing_adapter.parse(file_path)
 #
-# result = docliing_adapter.parse(file_path)
-# print(result)
+# result = docling_adapter.parse(file_path)
+# result.save_json(output)

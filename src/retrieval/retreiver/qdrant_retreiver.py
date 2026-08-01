@@ -50,7 +50,7 @@ class QdrantRetriever(BaseRetriever):
 
                     file_name=payload["file_name"],
                     page=payload["page"],
-                    section_title=payload["section_title"],
+                    # section_title=payload["section_title"],
 
                     section_summary=payload.get("section_summary"),
                     section_keywords=payload.get("section_keywords", []),

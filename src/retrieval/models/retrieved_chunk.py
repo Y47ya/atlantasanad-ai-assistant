@@ -13,7 +13,7 @@ class RetrievedChunk:
 
     file_name: str
     page: int
-    section_title: str
+    # section_title: str
 
     section_summary: str | None
     section_keywords: list[str]

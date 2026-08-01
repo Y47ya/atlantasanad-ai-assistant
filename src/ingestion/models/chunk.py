@@ -14,6 +14,8 @@ class Chunk:
         return {
 
             "chunk_id": self.metadata.chunk_id,
+            # "section_title": self.section.metadata.semantic.display_title,
+            # "chunk_title": self.metadata.semantic.display_title,
 
             "text": self.text,
 
@@ -21,7 +23,6 @@ class Chunk:
             "file_name": self.metadata.file_name,
 
             "page": self.section.page,
-            "section_title": self.section.title,
 
             "chunk_index": self.metadata.chunk_index,
 

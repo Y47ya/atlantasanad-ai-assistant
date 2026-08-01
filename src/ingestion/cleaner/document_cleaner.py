@@ -22,8 +22,6 @@ class DocumentCleaner:
 
         for section in document.sections:
 
-            section.title = self.clean_text(section.title)
-
             cleaned_blocks = []
 
             for block in section.content:

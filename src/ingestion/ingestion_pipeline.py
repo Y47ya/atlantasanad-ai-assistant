@@ -1,3 +1,5 @@
+from json import dumps
+
 from src.config.settings import *
 from src.ingestion.chunking.chunking_pipeline import ChunkingPipeline
 from src.ingestion.chunking.recursive_chuner import RecursiveChunker
@@ -5,14 +7,17 @@ from src.ingestion.cleaner.document_cleaner import DocumentCleaner
 from src.embeding.embeding_pipeline import EmbeddingPipeline
 from src.embeding.hugging_face_embeding import HuggingFaceEmbedding
 from src.ingestion.metadata.chunk_metadata_pipeline import ChunkMetadataPipeline
+from src.ingestion.metadata.context.chunk_context_builder import ChunkContextBuilder
+from src.ingestion.metadata.context.context_builder import ContextWindow
 from src.ingestion.metadata.section_metadata_pipeline import SectionMetadataPipeline
 from src.ingestion.metadata.semantic_metadata_generator import SemanticMetadataGenerator
 from src.ingestion.models.document import Document
+from src.ingestion.parser.base_parser import BaseParser
 from src.ingestion.parser.docling_converter import DoclingAdapter
 from src.llm.ollama import OllamaLLM
 from src.ingestion.storage.qdrant_pipeline import QdrantPipeline
 from src.ingestion.storage.qdrant_store import QdrantStore
-from src.llm.prompts import SEMANTIC_METADATA_PROMPT
+from src.llm.prompts import SEMANTIC_METADATA_PROMPT, CHUNK_METADATA_PROMPT
 from src.tools import create_qdrant_client
 
 
@@ -20,7 +25,7 @@ class IngestionPipeline:
 
     def __init__(
             self,
-            adapter: DoclingAdapter,
+            adapter: BaseParser,
             cleaner: DocumentCleaner,
             section_metadata_pipeline: SectionMetadataPipeline,
             chunking_pipeline: ChunkingPipeline,
@@ -38,44 +43,28 @@ class IngestionPipeline:
 
 
     def process(self, document_path: Path) -> Document:
-        # document = self.adapter.parse(pdf_path)
-        #
-        # document = self.cleaner.clean(document)
-        #
-        # document = self.section_metadata_pipeline.process(document)
-        #
-        # print(
-        #     dumps(
-        #         document.to_dict(),
-        #         indent=4,
-        #         ensure_ascii=False,
-        #         default=str,
-        #     )
-        # )
-        #
-        # document = self.chunking_pipeline.process(document)
-        #
-        # document = self.chunk_metadata_pipeline.process(document)
-        #
-        # print(
-        #     dumps(
-        #         document.to_dict(),
-        #         indent=4,
-        #         ensure_ascii=False,
-        #         default=str,
-        #     )
-        # )
-        #
-        # document = self.embedding_pipeline.process(document)
 
-        document_path = Path(
-            PROJECT_ROOT / "tests/processed_data/Véhicule-pro-splited-version.json"
-        )
+        document = self.adapter.parse(document_path)
+        print("document is parsed")
 
+        document = self.cleaner.clean(document)
+        print("document is cleaned")
 
-        document = Document.load_json(document_path)
+        document = self.section_metadata_pipeline.process(document)
+        print("Section semantic metadata is generated")
+
+        document = self.chunking_pipeline.process(document)
+        print("Content is chunked")
+
+        document = self.chunk_metadata_pipeline.process(document)
+        print("Chunk semantic metadata is generated")
+
+        document = self.embedding_pipeline.process(document)
+        print("Chunks are embedded")
 
         document = self.qdrant_pipeline.process(document)
+        print("Chunks are stored")
+
 
         return document
 
@@ -90,8 +79,13 @@ def main():
     #     PROJECT_ROOT / "data/raw/assurance_automobile_fr_version_finale.pdf"
     # )
 
+    # file = "Conditions Générales Auto+ 04.2024_Word-pages-merged"
+    file = "Conditions Générales Auto+ 04.2024_Word"
+    # file = "Véhicule_pro"
+    # file = "Véhicule-pro-splited-version"
+
     pdf_path = Path(
-        PROJECT_ROOT / "data/raw/Véhicule-pro-splited-version.pdf"
+        PROJECT_ROOT / f"data/raw/{file}.pdf"
     )
 
     print(f"[1/9] PDF: {pdf_path.name}")
@@ -115,14 +109,23 @@ def main():
 
     print("[5/9] Initializing metadata pipelines...")
 
+    context_builder = ContextWindow(
+        previous_sections=1,
+        next_sections=1
+    )
+
     section_metadata_pipeline = SectionMetadataPipeline(
         semantic_generator,
         SEMANTIC_METADATA_PROMPT,
+        context_builder
     )
 
+    chunk_context_builder = ChunkContextBuilder()
+
     chunk_metadata_pipeline = ChunkMetadataPipeline(
-        semantic_generator,
-        SEMANTIC_METADATA_PROMPT,
+        generator=semantic_generator,
+        context_builder=chunk_context_builder,
+        prompt=CHUNK_METADATA_PROMPT,
     )
 
     print("[6/9] Initializing chunker...")
@@ -191,14 +194,16 @@ def main():
     print(f"Sections: {len(document.sections)}")
     print(f"Chunks: {len(document.chunks)}")
 
-    output_dir = PROJECT_ROOT / "tests" / "processed_data"
-    output_dir.mkdir(parents=True, exist_ok=True)
+    document.print_document()
 
-    output_file = output_dir / f"{document.file_name.removesuffix('.pdf')}.json"
-
-    document.save_json(output_file)
-
-    print(f"Saved processed document to {output_file}")
+    # output_dir = PROJECT_ROOT / "data" / "processed_data"
+    # output_dir.mkdir(parents=True, exist_ok=True)
+    #
+    # output_file = output_dir / f"{document.file_name.removesuffix('.pdf')}.json"
+    #
+    # document.save_json(output_file)
+    #
+    # print(f"Saved processed document to {output_file}")
 
 
 if __name__ == "__main__":

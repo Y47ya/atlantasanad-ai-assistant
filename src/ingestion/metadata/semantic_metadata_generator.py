@@ -1,6 +1,17 @@
 import json
 from src.ingestion.models.semantic_metadata import SemanticMetadata
-from src.llms.base_llm import BaseLLM
+from src.llm.base_llm import BaseLLM
+import json
+import re
+
+
+def extract_json(text: str) -> dict:
+    match = re.search(r"\{.*\}", text, re.DOTALL)
+
+    if not match:
+        raise ValueError(f"No JSON found:\n{text}")
+
+    return json.loads(match.group())
 
 
 class SemanticMetadataGenerator:
@@ -8,22 +19,33 @@ class SemanticMetadataGenerator:
     def __init__(self, llm: BaseLLM):
         self.llm = llm
 
-    def generate(self, title: str, content: str, prompt: str) -> SemanticMetadata:
+    def generate(
+        self,
+        prompt: str,
+        **kwargs,
+    ) -> SemanticMetadata:
 
-        prompt = prompt.format(
-            title=title,
-            content=content
-        )
+        formatted_prompt = prompt.format(**kwargs)
 
-        response = self.llm.generate(prompt)
+        MAX_RETRIES = 3
 
-        data = json.loads(response)
+        for _ in range(MAX_RETRIES):
 
-        summary = data.get("summary", "").strip()
-        keywords = data.get("keywords", [])
+            response = self.llm.generate(formatted_prompt)
+
+            try:
+                data = extract_json(response)
+                break
+
+            except Exception:
+                continue
+
+        else:
+            raise ValueError(response)
 
         return SemanticMetadata(
-            summary=summary,
-            keywords=keywords,
-            generation=self.llm.generation_info()
+            display_title=data.get("display_title"),
+            summary=data.get("summary", "").strip(),
+            keywords=data.get("keywords", []),
+            generation=self.llm.generation_info(),
         )

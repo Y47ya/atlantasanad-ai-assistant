@@ -71,6 +71,7 @@ class OllamaLLM(BaseLLM):
                 "model": self._model,
                 "prompt": prompt,
                 "stream": False,
+                "format": "json",
             },
         )
 
