@@ -31,7 +31,6 @@ class SectionMetadataPipeline:
             return document
 
         for index, section in enumerate(document.sections):
-            print(f"Generating metadata for section {index}")
 
             context = self.context_builder.build(
                 document=document,

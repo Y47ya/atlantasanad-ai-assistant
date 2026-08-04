@@ -8,13 +8,12 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 load_dotenv(PROJECT_ROOT / ".env")
 
-# PARSER_CONFIG = load_config(
-#     PROJECT_ROOT / "configs/ingestion/parser.yaml"
-# )
-
-# print(PROJECT_ROOT)
-# print(PROJECT_ROOT / ".env")
-# print((PROJECT_ROOT / ".env").exists())
+EXTERNAL_FILES_NAME = [
+    PROJECT_ROOT / "data/raw/assurance_automobile_fr_version_finale",
+    PROJECT_ROOT / "data/raw/Auto+_véhicules_utilitaires",
+    PROJECT_ROOT / "data/raw/Notice d'Information Multirisque auto+ 02 2024",
+    PROJECT_ROOT / "data/raw/Véhicule_pro"
+]
 
 OLLAMA_PULL_IF_MISSING = os.getenv("OLLAMA_PULL_IF_MISSING")
 OLLAMA_HOST = os.getenv("OLLAMA_HOST")

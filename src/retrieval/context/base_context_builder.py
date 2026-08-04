@@ -1,7 +1,4 @@
 from abc import ABC, abstractmethod
-
-from src.retrieval.models.query import Query
-from src.retrieval.models.retrieval_result import RetrievalResult
 from src.retrieval.models.retrieved_chunk import RetrievedChunk
 
 
@@ -13,3 +10,4 @@ class BaseContextBuilder(ABC):
         chunks: list[RetrievedChunk],
     ) -> str:
         pass
+

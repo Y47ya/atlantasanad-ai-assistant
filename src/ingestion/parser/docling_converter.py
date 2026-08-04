@@ -22,10 +22,10 @@ class DoclingAdapter(BaseParser):
 
     def __init__(self):
         pipeline_options = PdfPipelineOptions()
-        pipeline_options.do_ocr = False  # backend pypdfium2 suffit pour les accents, pas besoin d'OCR
+        pipeline_options.do_ocr = False
         pipeline_options.do_table_structure = True
         pipeline_options.table_structure_options.mode = TableFormerMode.ACCURATE
-        pipeline_options.table_structure_options.do_cell_matching = False  # teste aussi True
+        pipeline_options.table_structure_options.do_cell_matching = False
 
         self.converter = DocumentConverter(
             format_options={
@@ -50,27 +50,27 @@ class DoclingAdapter(BaseParser):
 
     def parse(self, pdf_path: Path) -> Document:
 
-        # result = self.converter.convert(pdf_path)
-        # doc = result.document
-        # file_name = pdf_path.stem
-        # json_path = PROJECT_ROOT / "data" / "parsed_data" / f"{file_name}.json"
+        file_name = pdf_path.stem
+        json_path = PROJECT_ROOT / "data" / "parsed_data" / f"{file_name}.json"
+
+        result = self.converter.convert(pdf_path)
+        doc = result.document
+        full_text = doc.export_to_markdown()
+        print(full_text)
         # doc.save_as_json(json_path)
 
         # Used only for debugging to reduce memory usage
         # read result's parsed content directly
-        file_name = pdf_path.stem
-        json_path = PROJECT_ROOT / "data" / "parsed_data" / f"{file_name}.json"
-
-        if json_path.exists():
-            print(f"Loading parsed document: {json_path}")
-            doc = DoclingDocument.load_from_json(json_path)
-
-        else:
-            print(f"Parsing PDF: {pdf_path}")
-
-            result = self.converter.convert(pdf_path)
-            doc = result.document
-            doc.save_as_json(json_path)
+        # if json_path.exists():
+        #     print(f"Loading parsed document: {json_path}")
+        #     doc = DoclingDocument.load_from_json(json_path)
+        #
+        # else:
+        #     print(f"Parsing PDF: {pdf_path}")
+        #
+        #     result = self.converter.convert(pdf_path)
+        #     doc = result.document
+        #     doc.save_as_json(json_path)
         # -------------------------------------------------
 
         pages_count = doc.num_pages()
@@ -133,17 +133,18 @@ class DoclingAdapter(BaseParser):
         return document
 
 
-# # file_name = "Véhicule_pro"
+# file_name = "Véhicule_pro"
 # file_name = "Conditions Générales Auto+ 04.2024_Word"
-#
-# file_path = Path(PROJECT_ROOT / f"data/raw/{file_name}.pdf")
-#
-# output = Path(PROJECT_ROOT / f"data/parsed_data/{file_name}.json")
-#
-#
-# docling_adapter = DoclingAdapter()
-#
-# # docliing_adapter.parse(file_path)
-#
-# result = docling_adapter.parse(file_path)
-# result.save_json(output)
+# file_name = "assurance_automobile_fr_version_finale"
+file_name = "Auto+_véhicules_utilitaires"
+
+file_path = Path(PROJECT_ROOT / f"data/raw/{file_name}.pdf")
+
+output = Path(PROJECT_ROOT / f"data/parsed_data/{file_name}.json")
+
+
+docling_adapter = DoclingAdapter()
+
+# docliing_adapter.parse(file_path)
+
+result = docling_adapter.parse(file_path)
