@@ -1,3 +1,0 @@
-docling-parse
-pyyaml
-python-dotenv
