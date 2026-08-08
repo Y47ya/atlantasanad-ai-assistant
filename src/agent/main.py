@@ -5,6 +5,7 @@ from src.agent.chat_llm.agent_llm import llm
 from src.agent.agent import Agent
 from src.agent.graph import AgentGraph
 from src.agent.router_prompt import prompt
+from src.agent.tools.document.pdf_extractor import PDFExtractor
 from src.agent.tools.edition_devis_tool import EditionDevisTool
 from src.agent.tools.rag_tool import RAGTool
 from src.agent.tools.simulation_tool import SimulationTool
@@ -64,8 +65,13 @@ def build_graph():
         context_builder=context_builder,
     )
 
+    pdf_extractor = PDFExtractor()
+
     simulation_tool = SimulationTool(api_service)
-    edition_devis_tool = EditionDevisTool(api_service)
+    edition_devis_tool = EditionDevisTool(
+        pdf_extractor=pdf_extractor,
+        api_service=api_service
+    )
     rag_tool = RAGTool(retrieval_pipeline)
 
     tools = [
@@ -98,7 +104,7 @@ def main():
 
         question = input("Question(q to quit) : ")
 
-        if question.lower() == "exit":
+        if question.lower() == "q":
             break
 
         messages.append(
