@@ -61,3 +61,11 @@ class RetrievalPipeline:
             chunks=chunks,
             context=context,
         )
+
+    def retrieve_context(
+            self,
+            question: str,
+    ) -> str:
+        result = self.process(question)
+
+        return result.context

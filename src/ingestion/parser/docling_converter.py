@@ -51,26 +51,25 @@ class DoclingAdapter(BaseParser):
     def parse(self, pdf_path: Path) -> Document:
 
         file_name = pdf_path.stem
-        json_path = PROJECT_ROOT / "data" / "parsed_data" / f"{file_name}.json"
+        json_path = Path(PROJECT_ROOT / "data" / "parsed_data" / f"{file_name}.json")
 
-        result = self.converter.convert(pdf_path)
-        doc = result.document
-        full_text = doc.export_to_markdown()
-        print(full_text)
-        # doc.save_as_json(json_path)
+        # result = self.converter.convert(pdf_path)
+        # doc = result.document
+        # full_text = doc.export_to_markdown()
+        # print(full_text)
 
         # Used only for debugging to reduce memory usage
         # read result's parsed content directly
-        # if json_path.exists():
-        #     print(f"Loading parsed document: {json_path}")
-        #     doc = DoclingDocument.load_from_json(json_path)
-        #
-        # else:
-        #     print(f"Parsing PDF: {pdf_path}")
-        #
-        #     result = self.converter.convert(pdf_path)
-        #     doc = result.document
-        #     doc.save_as_json(json_path)
+        if json_path.exists():
+            print(f"Loading parsed document: {json_path.stem}")
+            doc = DoclingDocument.load_from_json(json_path)
+
+        else:
+            print(f"Parsing PDF: {pdf_path}")
+
+            result = self.converter.convert(pdf_path)
+            doc = result.document
+            doc.save_as_json(json_path)
         # -------------------------------------------------
 
         pages_count = doc.num_pages()

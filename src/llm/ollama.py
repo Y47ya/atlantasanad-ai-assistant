@@ -11,7 +11,7 @@ class OllamaLLM(BaseLLM):
         model: str,
         provider: str,
         host: str,
-        pull_if_missing: str,
+        pull_if_missing: bool,
         temperature: float = 0.0
     ):
         self._provider = provider
@@ -34,14 +34,20 @@ class OllamaLLM(BaseLLM):
         response = requests.get(f"{self._host}/api/tags")
         response.raise_for_status()
 
-        installed = {
-            model["name"]
-            for model in response.json()["models"]
-        }
+        models = response.json().get("models", [])
 
-        if self.model in installed:
+        if any(model["name"] == self.model for model in models):
             print(f"{self.model} already installed")
             return
+
+        # installed = {
+        #     model["name"]
+        #     for model in response.json()["input_schemas"]
+        # }
+        #
+        # if self.model in installed:
+        #     print(f"{self.model} already installed")
+        #     return
 
         if not self.pull_if_missing:
             raise RuntimeError(
@@ -80,7 +86,7 @@ class OllamaLLM(BaseLLM):
         return response.json()["response"].strip()
 
 
-# llm = OllamaLLM(
+# chat_llm = OllamaLLM(
 #     model=OLLAMA_MODEL,
 #     provider=OLLAMA_PROVIDER,
 #     host=OLLAMA_HOST,
@@ -88,6 +94,6 @@ class OllamaLLM(BaseLLM):
 #     temperature=OLLAMA_TEMPERATURE
 # )
 #
-# answer = llm.generate("Hello!")
+# answer = chat_llm.generate("Hello!")
 #
 # print(answer)

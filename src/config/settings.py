@@ -2,7 +2,6 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
-from src.ingestion.tools import load_config
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
@@ -41,4 +40,7 @@ QDRANT_DISTANCE = os.getenv("QDRANT_DISTANCE", "cosine")
 RERANKER_MODEL = os.getenv("RERANKER_MODEL")
 RETRIEVER_TOP_K = int(os.getenv("RETRIEVER_TOP_K"))
 RERANKER_TOP_K = int(os.getenv("RERANKER_TOP_K"))
+
+
+
 

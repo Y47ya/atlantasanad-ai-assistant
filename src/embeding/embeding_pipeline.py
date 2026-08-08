@@ -50,7 +50,7 @@ class EmbeddingPipeline:
         json_path = Path(PROJECT_ROOT / "data" / "processed_data" / "embedding_lvl" / f"{file_name}.json")
 
         if json_path.exists():
-            print(f"Loading embedding level document: {json_path}")
+            print(f"Loading embedding level document: {json_path.stem}")
             document = Document.load_json(json_path)
             return document
 

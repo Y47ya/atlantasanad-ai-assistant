@@ -14,6 +14,7 @@ class CrossEncoderReranker(BaseReranker):
         self.model = CrossEncoder(
             model_name,
             trust_remote_code=True,
+            local_files_only=True
         )
 
         self.top_k = top_k

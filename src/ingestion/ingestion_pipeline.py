@@ -38,26 +38,18 @@ class IngestionPipeline:
     def process(self, document_path: Path) -> Document:
 
         document = self.adapter.parse(document_path)
-        print("document is parsed")
 
         document = self.cleaner.clean(document)
-        print("document is cleaned")
 
         document = self.section_metadata_pipeline.process(document)
-        print("Section semantic metadata is generated")
 
         document = self.chunking_pipeline.process(document)
-        print("Content is chunked")
 
         document = self.chunk_metadata_pipeline.process(document)
-        print("Chunk semantic metadata is generated")
 
         document = self.embedding_pipeline.process(document)
-        print("Chunks are embedded")
 
         document = self.qdrant_pipeline.process(document)
-        print("Chunks are stored")
-
 
         return document
 

@@ -24,7 +24,7 @@ class ChunkMetadataPipeline:
         json_path = Path(PROJECT_ROOT / "data" / "processed_data" / "chunk_metadata_lvl" / f"{file_name}.json")
 
         if json_path.exists():
-            print(f"Loading chunk metadata level document: {json_path}")
+            print(f"Loading chunk metadata level document: {json_path.stem}")
             document = Document.load_json(json_path)
             return document
 

@@ -68,8 +68,6 @@ class QdrantStore(BaseVectorStore):
             payload=chunk.to_payload()
         )
 
-        print(f"{point.id} embedded.")
-
         return point
 
     def upsert(self, chunks: list[Chunk]):
