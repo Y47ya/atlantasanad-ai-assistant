@@ -1,5 +1,8 @@
-.env
+
 .venv/
 .idea/
-data/
+data/parsed_data
+data/processed_data
+data/qdrant
+data/raw
 tests/

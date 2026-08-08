@@ -1,0 +1,22 @@
+{
+  "success": true,
+  "simulation_id": "SIM-20260806-0001",
+  "quote_number": "38823427",
+  "product": "Auto+ Particulier",
+  "premium": {
+    "annual": 7420.50,
+    "monthly": 618.38,
+    "currency": "MAD"
+  },
+  "vehicle": {
+    "engine_type": "Diesel",
+    "horsepower": 8,
+    "new_value": 500000,
+    "market_value": 300000
+  },
+  "customer": {
+    "full_name": "Ahmed BENALI"
+  },
+  "status": "SIMULATION_CREATED",
+  "created_at": "2026-08-06T14:35:10Z"
+}
