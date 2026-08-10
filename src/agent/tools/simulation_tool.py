@@ -1,6 +1,8 @@
 from typing import Type, Any
 from pydantic import BaseModel
 from langchain_core.tools import BaseTool
+
+from src.agent.router_prompt import SIMULATION_TOOL_DESCRIPTION
 from src.agent.tools.input_schemas.simulation_input import SimulationToolInput
 from src.api.api_service import APIService
 from src.api.models.simulation_request import SimulationRequest
@@ -10,9 +12,7 @@ from src.api.models.simulation_request import SimulationRequest
 class SimulationTool(BaseTool):
 
     name: str = "simulation"
-    description: str = (
-        "Effectue une simulation d'assurance automobile."
-    )
+    description: str = (SIMULATION_TOOL_DESCRIPTION)
     args_schema: Type[BaseModel] = SimulationToolInput
     api_service: APIService
 

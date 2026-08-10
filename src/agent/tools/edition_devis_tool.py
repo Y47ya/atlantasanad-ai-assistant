@@ -1,5 +1,6 @@
 from langchain_core.tools import BaseTool
 
+from src.agent.router_prompt import EDITION_DEVIS_TOOL_DESCRIPTION
 from src.agent.tools.document import pdf_extractor
 from src.agent.tools.document.pdf_extractor import PDFExtractor
 from src.agent.tools.input_schemas.edition_devis_input import EditionDevisToolInput
@@ -13,10 +14,7 @@ class EditionDevisTool(BaseTool):
 
     name: str = "edition_devis"
 
-    description: str = (
-        "Consulte le devis d'une police d'assurance à partir de son identifiant."
-        "Utilise cet outil lorsque l'utilisateur souhaite consulter ou éditer un devis existant."
-    )
+    description: str = (EDITION_DEVIS_TOOL_DESCRIPTION)
 
     args_schema: Type[BaseModel] = EditionDevisToolInput
     pdf_extractor: PDFExtractor
