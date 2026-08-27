@@ -1,3 +1,4 @@
+from src.agent.tools.output_schemas.simulation_response import SimulationResponse
 from src.api.client.base_client import BaseAPIClient
 from src.api.models.edition_devis_request import EditionDevisRequest
 from src.api.models.simulation_request import SimulationRequest

@@ -1,4 +1,4 @@
-from src.agent.agent import Agent
+from src.agent.agent.agent import Agent
 from src.agent.state import AgentState
 
 
@@ -17,3 +17,4 @@ def agent_node(
     return {
         "messages": [response],
     }
+

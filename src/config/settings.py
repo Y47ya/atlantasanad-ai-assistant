@@ -41,6 +41,8 @@ RERANKER_MODEL = os.getenv("RERANKER_MODEL")
 RETRIEVER_TOP_K = int(os.getenv("RETRIEVER_TOP_K"))
 RERANKER_TOP_K = int(os.getenv("RERANKER_TOP_K"))
 
+PARSER_USAGE = os.getenv("PARSER_USAGE")
+
 
 
 

@@ -1,8 +1,7 @@
 from langgraph.graph import StateGraph
 from langgraph.graph import START
-from langgraph.graph import END
 
-from src.agent.agent import Agent
+from src.agent.agent.agent import Agent
 from src.agent.nodes import agent_node
 from src.agent.state import AgentState
 from langgraph.prebuilt import ToolNode, tools_condition

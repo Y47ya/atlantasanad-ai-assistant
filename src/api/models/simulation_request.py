@@ -8,7 +8,7 @@ class SimulationRequest:
     cateprof: str
     codepack: str
     telemobi: str
-    adremail: str
+    address_mail: str
     typemote: str
     puisvehi: str
     valeneuf: str

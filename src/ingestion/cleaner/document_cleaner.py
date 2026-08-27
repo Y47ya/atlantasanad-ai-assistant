@@ -35,7 +35,7 @@ class DocumentCleaner:
                     cleaned_blocks
                     and block.type == ContentType.LIST_ITEM
                     and cleaned_blocks[-1].type == ContentType.LIST_ITEM
-                    and cleaned_blocks[-1].content == block.content
+                    and cleaned_blocks[-1].message == block.content
                 ):
                     continue
 

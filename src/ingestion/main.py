@@ -153,10 +153,10 @@ def main():
 
     print("\nStarting ingestion...\n")
 
-    process_documents(
-        pipeline=pipeline,
-        paths=paths,
-    )
+    # process_documents(
+    #     pipeline=pipeline,
+    #     paths=paths,
+    # )
 
     # process_document(
     #     pipeline=pipeline,

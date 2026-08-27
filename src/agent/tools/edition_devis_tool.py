@@ -1,54 +1,63 @@
-from langchain_core.tools import BaseTool
 
-from src.agent.router_prompt import EDITION_DEVIS_TOOL_DESCRIPTION
-from src.agent.tools.document import pdf_extractor
-from src.agent.tools.document.pdf_extractor import PDFExtractor
-from src.agent.tools.input_schemas.edition_devis_input import EditionDevisToolInput
+from langchain_core.tools import BaseTool
+from src.agent.tools.input_shemas.edition_devis_input import EditionDevisToolInput
+from src.agent.tools.output_schemas.edition_devis_result import EditionDevisResult
 from src.api.api_service import APIService
 from typing import Type, Any
-from pydantic import BaseModel
+from pydantic import BaseModel, PrivateAttr
 from src.api.models.edition_devis_request import EditionDevisRequest
+from src.documents.pdf_service import PDFService
+from src.agent.tools_informations import TOOLS_INFORMATIONS
 
+
+EDITIONS_DEVIS_INFOS = TOOLS_INFORMATIONS.get("recuperation_devis")
 
 class EditionDevisTool(BaseTool):
 
-    name: str = "edition_devis"
+    name: str = EDITIONS_DEVIS_INFOS.get("name")
 
-    description: str = (EDITION_DEVIS_TOOL_DESCRIPTION)
+    description: str = EDITIONS_DEVIS_INFOS.get("description")
 
     args_schema: Type[BaseModel] = EditionDevisToolInput
-    pdf_extractor: PDFExtractor
-    api_service: APIService
+    _api_service: APIService = PrivateAttr()
+    _pdf_service: PDFService = PrivateAttr()
 
     def __init__(
-            self,
-            pdf_extractor: PDFExtractor,
-            api_service: APIService,
-            **kwargs,
+        self,
+        api_service: APIService,
+        **kwargs,
     ):
-        super().__init__(
-            pdf_extractor=pdf_extractor,
-            api_service=api_service,
-            **kwargs,
-        )
+        super().__init__(**kwargs)
 
-    def _run(self, idenpoli: int) -> str:
+        self._api_service = api_service
+        self._pdf_service = PDFService()
 
+    def _run(self, idenpoli: str) -> EditionDevisResult:
         request = EditionDevisRequest(
-            idenpoli=idenpoli
+            idenpoli=idenpoli,
         )
+        print("entrer _run outil")
 
-        response = self.api_service.edition_devis(
-            request
-        )
+        response = self._api_service.edition_devis(request)
 
-        acte = response["acte"]
+        if response["stat__ws"] != "SUCCESS":
+            result = EditionDevisResult(
+                status="FAILED",
+                policy_id=None,
+                message="Devis introuvable.",
+            )
+        else:
 
-        if acte["stat__ws"] != "SUCCESS":
-            return (
-                "Impossible de récupérer le devis."
+            self._pdf_service.save(
+                content=response["contdocu"],
             )
 
-        return self.pdf_extractor.extract_text(
-            acte["contdocu"]
-        )
+            result = EditionDevisResult(
+                status=response["stat__ws"],
+                policy_id=response["idenpoli"],
+                message="Le devis a été généré avec succès.",
+            )
+
+        print(type(result.message))
+        # print(result.content)
+        return result
